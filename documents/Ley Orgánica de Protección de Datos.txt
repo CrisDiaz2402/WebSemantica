@@ -1,0 +1,13 @@
+Ley Orgánica de Protección de Datos Personales del Ecuador — Resumen
+
+La Ley Orgánica de Protección de Datos Personales (LOPDP) del Ecuador fue aprobada en 2021 y tiene como objetivo principal garantizar el derecho a la protección de los datos personales de los ciudadanos. Esta norma establece principios, derechos y obligaciones para el tratamiento adecuado de los datos por parte de entidades públicas y privadas.
+
+Entre los principios clave de la ley se incluyen: legalidad, lealtad, transparencia, minimización de datos, exactitud, limitación de la finalidad y seguridad. Los responsables del tratamiento de datos deben informar a los titulares sobre el uso de sus datos, garantizar su seguridad, y permitir el ejercicio de derechos como el acceso, rectificación, cancelación y oposición (ARCO).
+
+La ley también establece la necesidad del consentimiento expreso del titular de los datos para su recolección y tratamiento, salvo en situaciones excepcionales permitidas por la normativa. Asimismo, regula el tratamiento de datos sensibles, como aquellos relacionados con la salud, la orientación sexual o las creencias religiosas.
+
+Se establece la figura del Delegado de Protección de Datos (DPD) para empresas y organizaciones que traten datos de forma masiva o sistemática, y se crea la Autoridad de Protección de Datos como entidad de supervisión y control.
+
+El incumplimiento de la ley puede derivar en sanciones administrativas, económicas y legales. Las empresas tienen un plazo para adecuar sus sistemas a esta normativa y deben implementar políticas de privacidad, medidas de seguridad y registros de tratamiento.
+
+La LOPDP coloca al Ecuador en sintonía con estándares internacionales como el Reglamento General de Protección de Datos (GDPR) de la Unión Europea, promoviendo un ecosistema digital más seguro y respetuoso de los derechos ciudadanos.

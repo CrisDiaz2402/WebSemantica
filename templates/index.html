@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Buscador de Documentos | Modelo Binario Clásico</title>
+        <meta name="description"
+            content="Buscador de documentos utilizando el modelo binario clásico de Information Retrieval.">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        </head>
+<body>
+    <div class="container">
+        <h1>Buscador de Documentos</h1>
+        <p class="subtitle">Modelo Binario Clásico (Information Retrieval)</p>
+        
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Ingrese su consulta de búsqueda...">
+            <button id="search-button">Buscar</button>
+        </div>
+        
+        <div id="results-container">
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

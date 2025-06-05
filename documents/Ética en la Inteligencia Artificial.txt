@@ -1,0 +1,13 @@
+La ética en la inteligencia artificial (IA) es un campo crucial que busca garantizar que el desarrollo y la aplicación de estas tecnologías se realicen de forma responsable, justa y centrada en el bienestar humano. A medida que los sistemas inteligentes se integran en decisiones médicas, financieras, judiciales y de seguridad, surge la necesidad urgente de establecer límites morales y normativos.
+
+Uno de los principales dilemas éticos en la IA es el sesgo algorítmico. Cuando un modelo se entrena con datos históricos, puede replicar prejuicios sociales, raciales o de género. Por ejemplo, se han documentado casos en que algoritmos de selección de personal discriminan a mujeres o minorías debido a patrones presentes en los datos históricos de contratación. Abordar este sesgo requiere una supervisión constante, auditorías algorítmicas y transparencia en los modelos utilizados.
+
+La privacidad es otra preocupación clave. Muchos sistemas de IA requieren enormes cantidades de datos personales para entrenarse, lo que plantea riesgos de vigilancia y uso indebido de información sensible. Esto ha llevado a movimientos internacionales por una IA responsable, como los Principios de la OCDE o el marco propuesto por la Unión Europea.
+
+También existe el riesgo de reemplazo laboral masivo por automatización. Si bien la IA puede aumentar la productividad, también puede dejar sin empleo a millones de personas si no se implementan políticas de transición laboral, educación continua y protección social.
+
+En el ámbito de los vehículos autónomos, la ética también es central: ¿cómo debería actuar un coche automático en una situación de accidente inevitable? ¿Debe priorizar la vida del conductor, de los peatones o de la mayoría?
+
+Además, la responsabilidad legal es un tema aún poco claro. ¿Quién es responsable si un sistema autónomo comete un error? ¿El desarrollador, el usuario o la máquina?
+
+Frente a estos desafíos, universidades, gobiernos y empresas están promoviendo comités de ética, regulación de IA y enfoques como el diseño centrado en el ser humano. La ética en la IA no es un obstáculo al progreso, sino una condición necesaria para que ese progreso sea sostenible y justo. Un desarrollo ético y responsable permitirá aprovechar el enorme potencial de la inteligencia artificial sin poner en riesgo los valores fundamentales de nuestras sociedades.

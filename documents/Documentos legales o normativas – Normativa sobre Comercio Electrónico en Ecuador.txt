@@ -1,0 +1,9 @@
+En Ecuador, el comercio electrónico ha crecido exponencialmente en los últimos años, y con ello ha surgido la necesidad de una regulación más clara para proteger a consumidores y empresas. La Ley de Comercio Electrónico, Firmas Electrónicas y Mensajes de Datos (Ley No. 67), promulgada en 2002 y reformada en varias ocasiones, establece las bases legales para la validez de contratos celebrados por medios digitales.
+
+Uno de los aspectos más importantes de esta normativa es la equivalencia funcional entre los documentos físicos y electrónicos. Según la ley, un mensaje de datos que contenga una firma electrónica tiene la misma validez jurídica que una firma manuscrita, siempre que cumpla con los requisitos de autenticidad e integridad.
+
+Además, se establecen obligaciones para los proveedores de servicios digitales, como garantizar la disponibilidad y confidencialidad de la información, y ofrecer mecanismos de resolución de conflictos. También se reconoce el derecho del consumidor a retractarse de una compra en línea, con ciertas condiciones, y se exige transparencia en los términos y condiciones de las transacciones.
+
+El control y supervisión de estas actividades está a cargo del Ministerio de Telecomunicaciones y de la Agencia de Regulación y Control de las Telecomunicaciones (ARCOTEL). Ambas entidades han trabajado en campañas de concientización sobre los derechos y deberes de los usuarios del comercio digital, especialmente durante eventos de alta demanda como el Cyber Monday.
+
+Esta ley se complementa con otras normativas, como la Ley Orgánica de Protección de Datos Personales, que entró en vigencia en 2021 y establece obligaciones específicas sobre el uso de la información de los usuarios durante transacciones digitales.

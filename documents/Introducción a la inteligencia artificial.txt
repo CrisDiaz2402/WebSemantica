@@ -1,0 +1,11 @@
+La inteligencia artificial (IA) es una rama de la informática que se enfoca en la creación de sistemas capaces de realizar tareas que normalmente requieren inteligencia humana. Estas tareas incluyen el reconocimiento de voz, la toma de decisiones, la comprensión del lenguaje natural, la visión por computadora y más. La IA combina elementos de programación, matemáticas, estadística, neurociencia y lógica para simular la inteligencia.
+
+Desde su origen en la década de 1950, la IA ha evolucionado desde simples programas de resolución de problemas hasta sistemas complejos como asistentes virtuales, autos autónomos y modelos de lenguaje como ChatGPT. Existen dos grandes categorías: la IA débil, diseñada para realizar tareas específicas (como recomendar una película), y la IA fuerte, que aspira a igualar o superar la inteligencia humana en cualquier dominio cognitivo.
+
+Algunos de los métodos más utilizados en IA incluyen el aprendizaje automático (machine learning), las redes neuronales artificiales y los algoritmos genéticos. El aprendizaje profundo, una subárea del aprendizaje automático, se basa en redes neuronales profundas y ha permitido grandes avances en procesamiento de imágenes y lenguaje natural.
+
+El impacto de la inteligencia artificial es amplio y creciente. En la medicina, ayuda a diagnosticar enfermedades a partir de imágenes; en la industria, optimiza cadenas de producción; en el comercio, personaliza experiencias de compra; en el transporte, mejora la logística y permite el desarrollo de vehículos autónomos.
+
+Sin embargo, la IA también plantea desafíos importantes. Uno de ellos es el desempleo tecnológico, derivado de la automatización de trabajos. Otro es el sesgo algorítmico, cuando los sistemas aprenden patrones injustos a partir de los datos. También hay debates éticos sobre el uso militar de la IA, la privacidad de los usuarios y la posibilidad de una superinteligencia fuera del control humano.
+
+En resumen, la inteligencia artificial representa una de las tecnologías más transformadoras del siglo XXI. Su desarrollo responsable requiere la colaboración de científicos, legisladores y la sociedad para garantizar que sus beneficios lleguen a todos y que sus riesgos sean mitigados.
