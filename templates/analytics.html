@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis - Extractor Semántico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1><i class="fas fa-brain"></i> Extractor Semántico</h1>
+            <ul class="nav-menu">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/analytics" class="active">Análisis</a></li>
+                <li><a href="/visualizations">Visualizaciones</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-chart-line"></i> Análisis Detallado</h1>
+            <p>Estadísticas completas del procesamiento de reseñas</p>
+        </div>
+
+        {% if error %}
+        <div class="error-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>{{ error }}</p>
+            <a href="/" class="btn btn-primary">Volver al Inicio</a>
+        </div>
+        {% elif report %}
+        
+        <div class="analytics-section">
+            <h2><i class="fas fa-info-circle"></i> Resumen General</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>{{ report.resumen_general.total_reseñas }}</h3>
+                    <p>Reseñas Procesadas</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-box"></i>
+                    <h3>{{ report.resumen_general.productos_únicos }}</h3>
+                    <p>Productos Únicos</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-tags"></i>
+                    <h3>{{ report.resumen_general.marcas_únicas }}</h3>
+                    <p>Marcas Únicas</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>{{ report.resumen_general.eventos_totales }}</h3>
+                    <p>Eventos Totales</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-section">
+            <h2><i class="fas fa-trophy"></i> Productos Más Mencionados</h2>
+            <div class="ranking-list">
+                {% for product, count in report.productos_más_mencionados.items()[:10] %}
+                <div class="ranking-item">
+                    <span class="rank">{{ loop.index }}</span>
+                    <span class="name">{{ product }}</span>
+                    <span class="count">{{ count }} menciones</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="analytics-section">
+            <h2><i class="fas fa-heart"></i> Distribución de Sentimientos</h2>
+            <div class="sentiment-stats">
+                {% set total_sentiments = report.distribución_sentimientos.positivo + report.distribución_sentimientos.negativo + report.distribución_sentimientos.neutro %}
+                
+                <div class="sentiment-item positive">
+                    <i class="fas fa-smile"></i>
+                    <div class="sentiment-info">
+                        <h3>Positivo</h3>
+                        <p>{{ report.distribución_sentimientos.positivo }} eventos</p>
+                        {% if total_sentiments > 0 %}
+                        <p>({{ "%.1f"|format(report.distribución_sentimientos.positivo / total_sentiments * 100) }}%)</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="sentiment-item negative">
+                    <i class="fas fa-frown"></i>
+                    <div class="sentiment-info">
+                        <h3>Negativo</h3>
+                        <p>{{ report.distribución_sentimientos.negativo }} eventos</p>
+                        {% if total_sentiments > 0 %}
+                        <p>({{ "%.1f"|format(report.distribución_sentimientos.negativo / total_sentiments * 100) }}%)</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="sentiment-item neutral">
+                    <i class="fas fa-meh"></i>
+                    <div class="sentiment-info">
+                        <h3>Neutro</h3>
+                        <p>{{ report.distribución_sentimientos.neutro }} eventos</p>
+                        {% if total_sentiments > 0 %}
+                        <p>({{ "%.1f"|format(report.distribución_sentimientos.neutro / total_sentiments * 100) }}%)</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-section">
+            <h2><i class="fas fa-calendar-check"></i> Tipos de Eventos Más Comunes</h2>
+            <div class="events-list">
+                {% for event_type, count in report.tipos_eventos_más_comunes.items() %}
+                <div class="event-item">
+                    <span class="event-type">{{ event_type.title() }}</span>
+                    <span class="event-count">{{ count }}</span>
+                    <div class="event-bar">
+                        {% set max_count = report.tipos_eventos_más_comunes.values()|list|max %}
+                        {% if max_count > 0 %}
+                        <div class="event-fill" style="width: {{ (count / max_count * 100) }}%"></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="analytics-section">
+            <h2><i class="fas fa-project-diagram"></i> Estadísticas del Grafo RDF</h2>
+            <div class="graph-stats">
+                <div class="graph-stat">
+                    <i class="fas fa-link"></i>
+                    <h3>{{ report.estadísticas_grafo.total_triples }}</h3>
+                    <p>Tripletas RDF</p>
+                </div>
+                <div class="graph-stat">
+                    <i class="fas fa-user"></i>
+                    <h3>{{ report.estadísticas_grafo.unique_subjects }}</h3>
+                    <p>Sujetos Únicos</p>
+                </div>
+                <div class="graph-stat">
+                    <i class="fas fa-arrow-right"></i>
+                    <h3>{{ report.estadísticas_grafo.unique_predicates }}</h3>
+                    <p>Predicados Únicos</p>
+                </div>
+                <div class="graph-stat">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>{{ report.estadísticas_grafo.unique_objects }}</h3>
+                    <p>Objetos Únicos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-section">
+            <h2><i class="fas fa-download"></i> Exportar Resultados</h2>
+            <div class="export-buttons">
+                <a href="/export/json" class="btn btn-primary">
+                    <i class="fas fa-file-code"></i> Exportar JSON
+                </a>
+                <a href="/export/rdf" class="btn btn-secondary">
+                    <i class="fas fa-sitemap"></i> Exportar RDF
+                </a>
+            </div>
+        </div>
+
+        {% endif %}
+    </div>
+</body>
+</html>

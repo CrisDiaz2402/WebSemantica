@@ -1,0 +1,11 @@
+review_text,user_id,product_category,rating,date
+"Compré el iPhone 14 Pro en Apple Store Madrid el 15 de marzo por €1200. La batería dura todo el día y la cámara es increíble. Lo recomiendo totalmente, 5 estrellas.",user_1,smartphone,5,2023-03-15
+"El Samsung Galaxy S23 que pedí en Amazon llegó con la pantalla rota. Muy decepcionante, tuve que devolverlo. El servicio al cliente fue terrible.",user_2,smartphone,1,2023-03-20
+Los auriculares Sony WH-1000XM5 son fantásticos. El sonido es cristalino y la cancelación de ruido funciona perfectamente. Valen cada euro de los €350 que pagué.,user_3,audio,5,2023-03-25
+Mi experiencia con el MacBook Pro M2 ha sido regular. Es rápido pero se calienta mucho y el precio de €2500 me parece excesivo para lo que ofrece.,user_4,laptop,3,2023-04-01
+El Google Pixel 7 que compré hace 2 meses empezó a fallar. La batería se agota muy rápido y a veces se reinicia solo. Contacté con el soporte técnico pero no me ayudaron.,user_5,smartphone,2,2023-04-05
+Excelente producto el iPad Air. Lo uso para trabajo y entretenimiento. La pantalla es hermosa y el rendimiento es muy bueno. Apple siempre cumple.,user_6,tablet,4,2023-04-10
+Terrible experiencia con los AirPods Pro. Se me cayeron y dejaron de funcionar. Por €280 esperaba mejor calidad. No los recomiendo para deportes.,user_7,audio,2,2023-04-15
+El Nintendo Switch que regalé a mi hijo funciona perfecto. Los juegos son divertidos y la consola es muy versátil. Buena compra por €300.,user_8,gaming,4,2023-04-20
+"Huawei P50 Pro tiene una cámara espectacular, las fotos nocturnas son impresionantes. Lástima que no tenga servicios de Google, eso limita su uso.",user_9,smartphone,4,2023-04-25
+Mi televisor LG OLED C2 de 55 pulgadas es una maravilla. Los colores son vibrantes y el contraste perfecto. Ideal para películas y gaming.,user_10,tv,5,2023-05-01

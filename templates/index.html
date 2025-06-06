@@ -1,28 +1,162 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Buscador de Documentos | Modelo Binario Clásico</title>
-        <meta name="description"
-            content="Buscador de documentos utilizando el modelo binario clásico de Information Retrieval.">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-        </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extractor Semántico de Opiniones de Productos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
 <body>
-    <div class="container">
-        <h1>Buscador de Documentos</h1>
-        <p class="subtitle">Modelo Binario Clásico (Information Retrieval)</p>
-        
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Ingrese su consulta de búsqueda...">
-            <button id="search-button">Buscar</button>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1><i class="fas fa-brain"></i> Extractor Semántico</h1>
+            <ul class="nav-menu">
+                <li><a href="/" class="active">Inicio</a></li>
+                <li><a href="/analytics">Análisis</a></li>
+                <li><a href="/visualizations">Visualizaciones</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+            </ul>
         </div>
-        
-        <div id="results-container">
+    </nav>
+
+    <div class="container">
+        <div class="hero-section">
+            <h1>Extractor Semántico de Opiniones de Productos</h1>
+            <p class="subtitle">Sistema avanzado de procesamiento de reseñas usando NLP, Web Semántica y Búsqueda Inteligente</p>
+        </div>
+
+        <!-- Sección de carga de archivos -->
+        <div class="upload-section">
+            <h2><i class="fas fa-upload"></i> Cargar Archivo CSV</h2>
+            <div class="upload-form">
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file-input">Seleccionar archivo CSV de reseñas:</label>
+                        <input type="file" id="file-input" name="file" accept=".csv" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="text-column">Nombre de la columna de texto:</label>
+                        <input type="text" id="text-column" name="text_column" value="review_text" placeholder="review_text">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-cogs"></i> Procesar Reseñas
+                    </button>
+                </form>
+            </div>
+            
+            <div class="sample-data">
+                <p>¿No tienes datos? <button id="generate-sample" class="btn btn-secondary">
+                    <i class="fas fa-magic"></i> Generar Datos de Ejemplo
+                </button></p>
+            </div>
+        </div>
+
+        <!-- Sección de búsqueda semántica -->
+        <div class="search-section">
+            <h2><i class="fas fa-search"></i> Búsqueda Semántica</h2>
+            <div class="search-form">
+                <div class="search-input-group">
+                    <input type="text" id="search-input" placeholder="Buscar en reseñas: ej. 'iPhone problemas batería'">
+                    <button id="search-button" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+                
+                <div class="search-filters">
+                    <button class="filter-btn" data-sentiment="positivo">
+                        <i class="fas fa-smile"></i> Positivas
+                    </button>
+                    <button class="filter-btn" data-sentiment="negativo">
+                        <i class="fas fa-frown"></i> Negativas
+                    </button>
+                    <button class="filter-btn" data-sentiment="neutro">
+                        <i class="fas fa-meh"></i> Neutras
+                    </button>
+                </div>
+            </div>
+            
+            <div id="search-results" class="results-container">
+                <div class="no-results">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Carga y procesa un archivo CSV para comenzar a buscar</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de estadísticas rápidas -->
+        <div class="stats-section">
+            <h2><i class="fas fa-chart-bar"></i> Estadísticas del Sistema</h2>
+            <div class="stats-grid" id="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-file-alt"></i>
+                    <h3 id="total-reviews">0</h3>
+                    <p>Reseñas Procesadas</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-box"></i>
+                    <h3 id="total-products">0</h3>
+                    <p>Productos Detectados</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-tags"></i>
+                    <h3 id="total-brands">0</h3>
+                    <p>Marcas Identificadas</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3 id="total-events">0</h3>
+                    <p>Eventos Extraídos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de funcionalidades -->
+        <div class="features-section">
+            <h2><i class="fas fa-cogs"></i> Funcionalidades Implementadas</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-code"></i>
+                    <h3>Expresiones Regulares</h3>
+                    <p>Extracción de precios, fechas, modelos y calificaciones</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-user-tag"></i>
+                    <h3>NER</h3>
+                    <p>Reconocimiento de entidades: productos, marcas, personas, ubicaciones</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-project-diagram"></i>
+                    <h3>Extracción de Relaciones</h3>
+                    <p>Relaciones usuario-producto-sentimiento</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Extracción de Eventos</h3>
+                    <p>Compras, devoluciones, quejas, recomendaciones</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-sitemap"></i>
+                    <h3>Representación del Conocimiento</h3>
+                    <p>Tripletas RDF y grafo semántico</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-search-plus"></i>
+                    <h3>Búsqueda Semántica</h3>
+                    <p>TF-IDF con similitud coseno</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Procesando...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
