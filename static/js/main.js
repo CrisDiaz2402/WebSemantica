@@ -1,23 +1,29 @@
 // Variables globales
 let isProcessing = false
+let fileExists = false
 
 // Elementos del DOM
-const uploadForm = document.getElementById("upload-form")
+const processDataBtn = document.getElementById("process-data")
 const generateSampleBtn = document.getElementById("generate-sample")
 const searchButton = document.getElementById("search-button")
 const searchInput = document.getElementById("search-input")
 const searchResults = document.getElementById("search-results")
 const loadingOverlay = document.getElementById("loading-overlay")
 const filterButtons = document.querySelectorAll(".filter-btn")
+const fileStatus = document.getElementById("file-status")
+const fileInfoText = document.getElementById("file-info-text")
 
 // Event listeners
 document.addEventListener("DOMContentLoaded", () => {
+  // Verificar archivo al cargar
+  checkDataFile()
+
   // Cargar estadísticas iniciales
   loadStats()
 
-  // Upload form
-  if (uploadForm) {
-    uploadForm.addEventListener("submit", handleFileUpload)
+  // Process data button
+  if (processDataBtn) {
+    processDataBtn.addEventListener("click", handleDataProcessing)
   }
 
   // Generate sample data
@@ -47,17 +53,39 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 })
 
-// Funciones principales
-async function handleFileUpload(e) {
-  e.preventDefault()
+// Verificar si existe el archivo data.csv
+async function checkDataFile() {
+  try {
+    const response = await fetch("/api/check-data-file")
+    const result = await response.json()
 
-  if (isProcessing) return
+    if (result.exists) {
+      fileExists = true
+      fileStatus.className = "file-status success"
+      fileInfoText.textContent = `Archivo encontrado - ${result.rows} filas, columnas: ${result.columns.join(", ")}`
+      processDataBtn.disabled = false
+    } else {
+      fileExists = false
+      fileStatus.className = "file-status error"
+      fileInfoText.textContent = "Archivo no encontrado. Genera datos de ejemplo para comenzar."
+      processDataBtn.disabled = true
+    }
+  } catch (error) {
+    console.error("Error verificando archivo:", error)
+    fileStatus.className = "file-status error"
+    fileInfoText.textContent = "Error verificando archivo"
+    processDataBtn.disabled = true
+  }
+}
 
-  const formData = new FormData(uploadForm)
-  const fileInput = document.getElementById("file-input")
+// Procesar datos del archivo fijo
+async function handleDataProcessing() {
+  if (isProcessing || !fileExists) return
 
-  if (!fileInput.files[0]) {
-    showNotification("Por favor selecciona un archivo CSV", "error")
+  const textColumn = document.getElementById("text-column").value.trim()
+
+  if (!textColumn) {
+    showNotification("Por favor especifica el nombre de la columna de texto", "warning")
     return
   }
 
@@ -65,18 +93,14 @@ async function handleFileUpload(e) {
   showLoading(true)
 
   try {
-    const response = await fetch("/upload", {
-      method: "POST",
-      body: formData,
-    })
-
+    const response = await fetch(`/process-fixed-data?text_column=${encodeURIComponent(textColumn)}`)
     const result = await response.json()
 
     if (response.ok) {
       showNotification(result.message, "success")
       loadStats()
     } else {
-      showNotification(result.error || "Error procesando archivo", "error")
+      showNotification(result.error || "Error procesando datos", "error")
     }
   } catch (error) {
     console.error("Error:", error)
@@ -99,6 +123,8 @@ async function generateSampleData() {
 
     if (response.ok) {
       showNotification(result.message, "success")
+      // Verificar archivo nuevamente después de generar datos
+      await checkDataFile()
       loadStats()
     } else {
       showNotification(result.error || "Error generando datos", "error")

@@ -4,6 +4,7 @@ from utils.visualization import OpinionVisualizer
 import os
 import json
 from datetime import datetime
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -27,37 +28,59 @@ def home():
     """Página principal del sistema"""
     return render_template('index.html')
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    """Procesa archivo CSV de reseñas"""
+@app.route('/api/check-data-file')
+def check_data_file():
+    """Verifica si existe el archivo data.csv y obtiene información básica"""
     try:
-        if 'file' not in request.files:
-            return jsonify({'error': 'No se seleccionó archivo'}), 400
+        data_file_path = os.path.join('documents', 'data.csv')
         
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({'error': 'No se seleccionó archivo'}), 400
-        
-        if file and file.filename.endswith('.csv'):
-            filename = f"reviews_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
+        if os.path.exists(data_file_path):
+            # Leer información básica del archivo
+            df = pd.read_csv(data_file_path)
             
-            # Procesar el archivo
-            text_column = request.form.get('text_column', 'review_text')
-            results = extractor.process_csv(filepath, text_column)
+            return jsonify({
+                'exists': True,
+                'path': data_file_path,
+                'rows': len(df),
+                'columns': list(df.columns),
+                'size': os.path.getsize(data_file_path)
+            })
+        else:
+            return jsonify({
+                'exists': False,
+                'path': data_file_path
+            })
+    except Exception as e:
+        return jsonify({
+            'exists': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/process-fixed-data')
+def process_fixed_data():
+    """Procesa el archivo fijo documents/data.csv"""
+    try:
+        data_file_path = os.path.join('documents', 'data.csv')
+        
+        if not os.path.exists(data_file_path):
+            return jsonify({'error': 'Archivo documents/data.csv no encontrado'}), 404
+        
+        # Obtener columna de texto
+        text_column = request.args.get('text_column', 'review_text')
+        
+        # Procesar el archivo
+        results = extractor.process_csv(data_file_path, text_column)
+        
+        if results:
+            return jsonify({
+                'success': True,
+                'message': f'Procesadas {len(results)} reseñas desde documents/data.csv',
+                'total_reviews': len(results),
+                'text_column': text_column
+            })
+        else:
+            return jsonify({'error': 'Error procesando el archivo'}), 500
             
-            if results:
-                return jsonify({
-                    'success': True,
-                    'message': f'Procesadas {len(results)} reseñas exitosamente',
-                    'total_reviews': len(results)
-                })
-            else:
-                return jsonify({'error': 'Error procesando el archivo'}), 500
-        
-        return jsonify({'error': 'Formato de archivo no válido. Use CSV.'}), 400
-        
     except Exception as e:
         return jsonify({'error': f'Error: {str(e)}'}), 500
 
@@ -280,7 +303,7 @@ def generate_sample():
     """Genera datos de ejemplo para probar el sistema"""
     try:
         from utils.main_processor import create_sample_csv
-        csv_file = create_sample_csv()
+        csv_file = create_sample_csv()  # Ahora guarda en documents/data.csv
         
         # Procesar automáticamente
         results = extractor.process_csv(csv_file, 'review_text')

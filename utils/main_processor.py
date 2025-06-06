@@ -217,9 +217,9 @@ def create_sample_csv():
     
     df = pd.DataFrame(sample_data)
     
-    # Guardar en la carpeta data
-    os.makedirs('data', exist_ok=True)
-    csv_path = 'data/sample_reviews.csv'
+    # Guardar en la carpeta documents
+    os.makedirs('documents', exist_ok=True)
+    csv_path = 'documents\data.csv'
     df.to_csv(csv_path, index=False, encoding='utf-8')
     print(f"Archivo {csv_path} creado con datos de ejemplo")
     return csv_path
