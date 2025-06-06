@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, send_file
 from utils.main_processor import OpinionExtractor
-from utils.visualization import OpinionVisualizer
+from utils.visualization import OpinionVisualizer # Asumo que esta clase existe y es necesaria
 import os
 import json
 from datetime import datetime
@@ -10,18 +10,17 @@ app = Flask(__name__)
 
 # Configuración
 app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['DATA_FOLDER'] = 'data'  # Nueva carpeta para CSVs
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 # Crear directorios necesarios
 os.makedirs('uploads', exist_ok=True)
-os.makedirs('data', exist_ok=True)  # Crear carpeta data
+os.makedirs('documents', exist_ok=True) # Asegurarse de que la carpeta documents exista
 os.makedirs('visualizations', exist_ok=True)
 os.makedirs('exports', exist_ok=True)
 
 # Inicializar el extractor semántico
 extractor = OpinionExtractor()
-visualizer = OpinionVisualizer()
+visualizer = OpinionVisualizer() # Asumo que OpinionVisualizer se inicializa aquí
 
 @app.route('/')
 def home():
@@ -30,27 +29,42 @@ def home():
 
 @app.route('/api/check-data-file')
 def check_data_file():
-    """Verifica si existe el archivo data.csv y obtiene información básica"""
+    """Verifica si existe el archivo test.csv y obtiene información básica"""
+    print("[INFO] Iniciando verificación del archivo test.csv")
+    
     try:
-        data_file_path = os.path.join('documents', 'data.csv')
+        data_file_path = os.path.join('documents', 'test.csv')
+        print(f"[DEBUG] Ruta construida para el archivo: {data_file_path}")
         
         if os.path.exists(data_file_path):
+            print("[INFO] El archivo existe.")
+            
             # Leer información básica del archivo
             df = pd.read_csv(data_file_path)
+            print(f"[INFO] Archivo leído correctamente. Filas: {len(df)}, Columnas: {df.columns.tolist()}")
             
-            return jsonify({
+            file_size = os.path.getsize(data_file_path)
+            print(f"[INFO] Tamaño del archivo: {file_size} bytes")
+            
+            result = {
                 'exists': True,
                 'path': data_file_path,
                 'rows': len(df),
                 'columns': list(df.columns),
-                'size': os.path.getsize(data_file_path)
-            })
+                'size': file_size
+            }
+            print(f"[RESULT] Resultado JSON a retornar: {result}")
+            return jsonify(result)
         else:
-            return jsonify({
+            print("[WARNING] El archivo no existe.")
+            result = {
                 'exists': False,
                 'path': data_file_path
-            })
+            }
+            print(f"[RESULT] Resultado JSON a retornar: {result}")
+            return jsonify(result)
     except Exception as e:
+        print(f"[ERROR] Ocurrió una excepción: {str(e)}")
         return jsonify({
             'exists': False,
             'error': str(e)
@@ -58,12 +72,12 @@ def check_data_file():
 
 @app.route('/process-fixed-data')
 def process_fixed_data():
-    """Procesa el archivo fijo documents/data.csv"""
+    """Procesa el archivo fijo documents/test.csv"""
     try:
-        data_file_path = os.path.join('documents', 'data.csv')
+        data_file_path = os.path.join('documents', 'test.csv')
         
         if not os.path.exists(data_file_path):
-            return jsonify({'error': 'Archivo documents/data.csv no encontrado'}), 404
+            return jsonify({'error': 'Archivo documents/test.csv no encontrado'}), 404
         
         # Obtener columna de texto
         text_column = request.args.get('text_column', 'review_text')
@@ -74,67 +88,9 @@ def process_fixed_data():
         if results:
             return jsonify({
                 'success': True,
-                'message': f'Procesadas {len(results)} reseñas desde documents/data.csv',
+                'message': f'Procesadas {len(results)} reseñas desde documents/test.csv',
                 'total_reviews': len(results),
                 'text_column': text_column
-            })
-        else:
-            return jsonify({'error': 'Error procesando el archivo'}), 500
-            
-    except Exception as e:
-        return jsonify({'error': f'Error: {str(e)}'}), 500
-
-@app.route('/api/csv-files')
-def list_csv_files():
-    """Lista archivos CSV disponibles en la carpeta data"""
-    try:
-        data_folder = app.config['DATA_FOLDER']
-        csv_files = []
-        
-        if os.path.exists(data_folder):
-            for filename in os.listdir(data_folder):
-                if filename.endswith('.csv'):
-                    filepath = os.path.join(data_folder, filename)
-                    file_size = os.path.getsize(filepath)
-                    file_modified = datetime.fromtimestamp(os.path.getmtime(filepath))
-                    
-                    csv_files.append({
-                        'filename': filename,
-                        'size': file_size,
-                        'modified': file_modified.isoformat(),
-                        'path': filepath
-                    })
-        
-        return jsonify({
-            'files': csv_files,
-            'total': len(csv_files)
-        })
-    except Exception as e:
-        return jsonify({'error': f'Error: {str(e)}'}), 500
-
-@app.route('/process-csv/<filename>')
-def process_csv_from_data(filename):
-    """Procesa un archivo CSV específico de la carpeta data"""
-    try:
-        data_folder = app.config['DATA_FOLDER']
-        filepath = os.path.join(data_folder, filename)
-        
-        if not os.path.exists(filepath):
-            return jsonify({'error': 'Archivo no encontrado'}), 404
-        
-        if not filename.endswith('.csv'):
-            return jsonify({'error': 'El archivo debe ser CSV'}), 400
-        
-        # Procesar el archivo
-        text_column = request.args.get('text_column', 'review_text')
-        results = extractor.process_csv(filepath, text_column)
-        
-        if results:
-            return jsonify({
-                'success': True,
-                'message': f'Procesadas {len(results)} reseñas desde {filename}',
-                'total_reviews': len(results),
-                'filename': filename
             })
         else:
             return jsonify({'error': 'Error procesando el archivo'}), 500
@@ -295,24 +251,6 @@ def export_rdf():
         filename = f"exports/knowledge_graph_{datetime.now().strftime('%Y%m%d_%H%M%S')}.ttl"
         extractor.export_knowledge_graph(filename)
         return send_file(filename, as_attachment=True)
-    except Exception as e:
-        return jsonify({'error': f'Error: {str(e)}'}), 500
-
-@app.route('/generate_sample')
-def generate_sample():
-    """Genera datos de ejemplo para probar el sistema"""
-    try:
-        from utils.main_processor import create_sample_csv
-        csv_file = create_sample_csv()  # Ahora guarda en documents/data.csv
-        
-        # Procesar automáticamente
-        results = extractor.process_csv(csv_file, 'review_text')
-        
-        return jsonify({
-            'success': True,
-            'message': f'Generados y procesados datos de ejemplo: {len(results)} reseñas',
-            'file': csv_file
-        })
     except Exception as e:
         return jsonify({'error': f'Error: {str(e)}'}), 500
 

@@ -1,3 +1,11 @@
+#3. Relationship Extraction (Determinar relaciones como (usuario, compró, producto))
+#- Archivo: `Papelera\utils\relationship_extractor.py`
+#- Llamado en: `Papelera\utils\main_processor.py` (dentro del método `process_single_review`).
+#- ¿Qué Hace?: Utiliza `spaCy` para el análisis de dependencias sintácticas. 
+#   ¬ El método `extract_subject_verb_object` identifica relaciones básicas Sujeto-Verbo-Objeto. 
+#   ¬ El método `extract_purchase_relations` busca patrones específicos de compra (ej. verbos como "compré") 
+#     y los relaciona con entidades de Persona y Producto previamente identificadas. 
+#   ¬ El método `extract_all_relations` combina todas las relaciones encontradas.
 import spacy
 from typing import List, Dict, Tuple
 import re

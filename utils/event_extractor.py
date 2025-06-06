@@ -1,3 +1,10 @@
+#4. Event Extraction (Detectar eventos de compra, devoluciones, quejas)
+#- Archivo: `Papelera\utils\event_extractor.py`
+#- Llamado en: `Papelera\utils\main_processor.py` (dentro del método `process_single_review`).
+#- ¿Qué Hace?: Define "disparadores" (triggers) de eventos (ej. "compré" para el evento 'compra', "devolví" para 'devolución'). 
+#   ¬ El método `extract_events` escanea el texto en busca de estos disparadores y, si los encuentra, 
+#     llama a `_create_event` para estructurar el evento, incluyendo el tipo, el disparador, el actor (usuario), 
+#     el objeto (producto), el tiempo, la ubicación y el sentimiento asociado (determinado por `_extract_sentiment`).     
 import spacy
 import re
 from typing import List, Dict, Tuple

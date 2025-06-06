@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizaciones - Extractor Semántico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1><i class="fas fa-brain"></i> Extractor Semántico</h1>
+            <ul class="nav-menu">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/analytics">Análisis</a></li>
+                <li><a href="/visualizations" class="active">Visualizaciones</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-chart-pie"></i> Visualizaciones Interactivas</h1>
+            <p>Gráficos dinámicos y análisis visual de los datos procesados</p>
+        </div>
+
+        <!-- Controles de visualización -->
+        <div class="visualization-controls">
+            <h2><i class="fas fa-sliders-h"></i> Controles de Visualización</h2>
+            <div class="controls-grid">
+                <button id="generate-charts" class="btn btn-primary">
+                    <i class="fas fa-chart-bar"></i> Generar Gráficos
+                </button>
+                <button id="refresh-data" class="btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i> Actualizar Datos
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid de visualizaciones -->
+        <div class="visualizations-grid">
+            
+            <!-- Gráfico de Sentimientos -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-heart"></i> Distribución de Sentimientos</h3>
+                    <div class="chart-controls">
+                        <select id="sentiment-chart-type">
+                            <option value="pie">Gráfico de Torta</option>
+                            <option value="bar">Gráfico de Barras</option>
+                            <option value="donut">Gráfico de Dona</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="sentiment-chart" class="chart-placeholder">
+                    <div class="chart-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando gráfico de sentimientos...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Productos -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-box"></i> Productos Más Mencionados</h3>
+                    <div class="chart-controls">
+                        <select id="products-limit">
+                            <option value="5">Top 5</option>
+                            <option value="10" selected>Top 10</option>
+                            <option value="15">Top 15</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="products-chart" class="chart-placeholder">
+                    <div class="chart-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando gráfico de productos...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Marcas -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-tags"></i> Marcas Más Populares</h3>
+                    <div class="chart-controls">
+                        <select id="brands-chart-type">
+                            <option value="horizontal">Barras Horizontales</option>
+                            <option value="vertical">Barras Verticales</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="brands-chart" class="chart-placeholder">
+                    <div class="chart-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando gráfico de marcas...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Eventos -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-calendar-alt"></i> Tipos de Eventos</h3>
+                    <div class="chart-controls">
+                        <button id="events-3d" class="btn btn-sm btn-secondary">Vista 3D</button>
+                    </div>
+                </div>
+                <div id="events-chart" class="chart-placeholder">
+                    <div class="chart-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando gráfico de eventos...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa de Calor de Sentimientos por Producto -->
+            <div class="chart-container full-width">
+                <div class="chart-header">
+                    <h3><i class="fas fa-fire"></i> Mapa de Calor: Sentimientos por Producto</h3>
+                    <div class="chart-controls">
+                        <button id="heatmap-toggle" class="btn btn-sm btn-info">Alternar Colores</button>
+                    </div>
+                </div>
+                <div id="heatmap-chart" class="chart-placeholder">
+                    <div class="chart-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando mapa de calor...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Línea Temporal -->
+            <div class="chart-container full-width">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-line"></i> Evolución Temporal de Sentimientos</h3>
+                    <div class="chart-controls">
+                        <select id="timeline-granularity">
+                            <option value="day">Por Día</option>
+                            <option value="week">Por Semana</option>
+                            <option value="month">Por Mes</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="timeline-chart" class="chart-placeholder">
+                    <div class="chart-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando línea temporal...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nube de Palabras -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-cloud"></i> Nube de Palabras</h3>
+                    <div class="chart-controls">
+                        <select id="wordcloud-sentiment">
+                            <option value="all">Todas</option>
+                            <option value="positivo">Positivas</option>
+                            <option value="negativo">Negativas</option>
+                            <option value="neutro">Neutras</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="wordcloud-chart" class="chart-placeholder">
+                    <div class="chart-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Generando nube de palabras...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Red de Relaciones -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-project-diagram"></i> Red de Relaciones</h3>
+                    <div class="chart-controls">
+                        <button id="network-layout" class="btn btn-sm btn-secondary">Cambiar Layout</button>
+                    </div>
+                </div>
+                <div id="network-chart" class="chart-placeholder">
+                    <div class="chart-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Construyendo red de relaciones...</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Estadísticas de Visualización -->
+        <div class="visualization-stats">
+            <h2><i class="fas fa-info-circle"></i> Estadísticas de Visualización</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3 id="charts-generated">0</h3>
+                    <p>Gráficos Generados</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-database"></i>
+                    <h3 id="data-points">0</h3>
+                    <p>Puntos de Datos</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <h3 id="last-update">--</h3>
+                    <p>Última Actualización</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-eye"></i>
+                    <h3 id="views-count">0</h3>
+                    <p>Visualizaciones</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuración Avanzada -->
+        <div class="advanced-config">
+            <h2><i class="fas fa-cogs"></i> Configuración Avanzada</h2>
+            <div class="config-grid">
+                <div class="config-section">
+                    <h4>Colores del Tema</h4>
+                    <div class="color-picker-group">
+                        <label>Positivo: <input type="color" id="color-positive" value="#28a745"></label>
+                        <label>Negativo: <input type="color" id="color-negative" value="#dc3545"></label>
+                        <label>Neutro: <input type="color" id="color-neutral" value="#6c757d"></label>
+                    </div>
+                </div>
+                <div class="config-section">
+                    <h4>Opciones de Exportación</h4>
+                    <div class="export-options">
+                        <label><input type="checkbox" id="export-png" checked> PNG</label>
+                        <label><input type="checkbox" id="export-svg"> SVG</label>
+                        <label><input type="checkbox" id="export-pdf"> PDF</label>
+                        <label><input type="checkbox" id="export-html"> HTML</label>
+                    </div>
+                </div>
+                <div class="config-section">
+                    <h4>Animaciones</h4>
+                    <div class="animation-controls">
+                        <label><input type="checkbox" id="enable-animations" checked> Habilitar Animaciones</label>
+                        <label>Duración: <input type="range" id="animation-duration" min="500" max="3000" value="1000"> <span id="duration-value">1000ms</span></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Generando visualizaciones...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/visualizations.js') }}"></script>
+</body>
+</html>

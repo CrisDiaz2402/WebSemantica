@@ -63,7 +63,7 @@
         <div class="analytics-section">
             <h2><i class="fas fa-trophy"></i> Productos Más Mencionados</h2>
             <div class="ranking-list">
-                {% for product, count in report.productos_más_mencionados.items()[:10] %}
+                {% for product, count in (report.productos_más_mencionados.items()|list)[:10] %}
                 <div class="ranking-item">
                     <span class="rank">{{ loop.index }}</span>
                     <span class="name">{{ product }}</span>
@@ -123,8 +123,7 @@
                     <div class="event-bar">
                         {% set max_count = report.tipos_eventos_más_comunes.values()|list|max %}
                         {% if max_count > 0 %}
-                        <div class="event-fill" style="width: {{ (count / max_count * 100) }}%"></div>
-                        {% endif %}
+                    <div class="event-fill" data-count="{{ count }}" data-max="{{ max_count }}"></div>                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
@@ -156,20 +155,15 @@
                 </div>
             </div>
         </div>
-
-        <div class="analytics-section">
-            <h2><i class="fas fa-download"></i> Exportar Resultados</h2>
-            <div class="export-buttons">
-                <a href="/export/json" class="btn btn-primary">
-                    <i class="fas fa-file-code"></i> Exportar JSON
-                </a>
-                <a href="/export/rdf" class="btn btn-secondary">
-                    <i class="fas fa-sitemap"></i> Exportar RDF
-                </a>
-            </div>
-        </div>
-
         {% endif %}
     </div>
 </body>
 </html>
+<script>
+document.querySelectorAll('.event-fill').forEach(bar => {
+    const count = parseInt(bar.dataset.count);
+    const max = parseInt(bar.dataset.max);
+    const percentage = (count / max) * 100;
+    bar.style.width = percentage + '%';
+});
+</script>

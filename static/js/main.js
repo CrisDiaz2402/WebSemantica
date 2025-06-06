@@ -26,10 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
     processDataBtn.addEventListener("click", handleDataProcessing)
   }
 
-  // Generate sample data
-  if (generateSampleBtn) {
-    generateSampleBtn.addEventListener("click", generateSampleData)
-  }
+  // // Generate sample data
+  // if (generateSampleBtn) {
+  //   generateSampleBtn.addEventListener("click", generateSampleData)
+  // }
 
   // Search functionality
   if (searchButton) {
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 })
 
-// Verificar si existe el archivo data.csv
+// Verificar si existe el archivo test.csv
 async function checkDataFile() {
   try {
     const response = await fetch("/api/check-data-file")
@@ -111,32 +111,32 @@ async function handleDataProcessing() {
   }
 }
 
-async function generateSampleData() {
-  if (isProcessing) return
+// async function generateSampleData() {
+//   if (isProcessing) return
 
-  isProcessing = true
-  showLoading(true)
+//   isProcessing = true
+//   showLoading(true)
 
-  try {
-    const response = await fetch("/generate_sample")
-    const result = await response.json()
+//   try {
+//     const response = await fetch("/generate_sample")
+//     const result = await response.json()
 
-    if (response.ok) {
-      showNotification(result.message, "success")
-      // Verificar archivo nuevamente después de generar datos
-      await checkDataFile()
-      loadStats()
-    } else {
-      showNotification(result.error || "Error generando datos", "error")
-    }
-  } catch (error) {
-    console.error("Error:", error)
-    showNotification("Error de conexión", "error")
-  } finally {
-    isProcessing = false
-    showLoading(false)
-  }
-}
+//     if (response.ok) {
+//       showNotification(result.message, "success")
+//       // Verificar archivo nuevamente después de generar datos
+//       await checkDataFile()
+//       loadStats()
+//     } else {
+//       showNotification(result.error || "Error generando datos", "error")
+//     }
+//   } catch (error) {
+//     console.error("Error:", error)
+//     showNotification("Error de conexión", "error")
+//   } finally {
+//     isProcessing = false
+//     showLoading(false)
+//   }
+// }
 
 async function performSearch() {
   const query = searchInput.value.trim()

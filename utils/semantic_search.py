@@ -1,3 +1,18 @@
+#5. Modelo de Recuperación (Permitir recuperar reseñas similares por producto o experiencia)
+#- Archivo: `utils\semantic_search.py`
+#- Llamado en: `utils\main_processor.py` (dentro del método:
+#   ¬ `get_semantic_search_results`, 
+#   ¬ `search_by_product`, 
+#   ¬ `search_by_sentiment`). 
+#  Estas funciones son a su vez llamadas por `app.py` (en las rutas: 
+#   ¬ `/search`, `/search/sentiment/<sentiment>`, 
+#   ¬ `/search/product/<product>`) 
+#  y por `Papelera\static\js\main.js` y `Papelera\templates\dashboard.html` (para las búsquedas avanzadas).
+#- ¿Qué Hace?: Implementa un sistema de búsqueda semántica utilizando `TfidfVectorizer` de `scikit-learn` para 
+#   convertir el texto de las reseñas y las consultas en vectores numéricos. Luego, utiliza la `cosine_similarity` 
+#   (similitud coseno) para encontrar reseñas que son semánticamente similares a una consulta. Incluye métodos específicos 
+#   para buscar por producto (`search_by_product`) y por sentimiento (`search_by_sentiment`).
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd

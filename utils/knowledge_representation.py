@@ -1,3 +1,18 @@
+#6. Representación del conocimiento (Generar tripletas semánticas de opiniones)
+#- Archivo: `utils\knowledge_representation.py`
+#- Llamado en: `utils\main_processor.py` (dentro del método `process_csv` para construir el grafo, y en `get_products_by_sentiment` para consultarlo).
+#- ¿Qué Hace?: Utiliza la biblioteca `rdflib` para construir un grafo de conocimiento. Define namespaces (`REVIEW`, `PRODUCT`, `USER`, `EVENT`) y métodos como 
+#  `add_triple` para añadir relaciones (sujeto, predicado, objeto) al grafo. El método `add_event_to_graph` es clave para transformar los eventos extraídos 
+#  en tripletas RDF, como (Usuario, compró, Producto) o (Producto, tiene_sentimiento, negativo).
+
+#7. Web Semántica (Transformar las relaciones a un grafo RDF de experiencias)
+#- Archivo: `\utils\knowledge_representation.py`
+#- Llamado en: `utils\main_processor.py` (el método `create_product_sentiment_graph` es el que orquesta la construcción del grafo a partir de las reseñas procesadas).
+#- Hace: Es la implementación directa de la Web Semántica. La clase `KnowledgeRepresentation` gestiona el grafo RDF. El método `create_product_sentiment_graph` itera 
+#  sobre las reseñas procesadas y sus eventos, y los convierte en tripletas RDF que se añaden al grafo. Esto permite que las experiencias de los usuarios 
+#  (eventos, sentimientos, productos) se representen como una red de conocimiento consultable. El método `query_products_by_sentiment` permite realizar 
+#  consultas SPARQL sobre este grafo.
+  
 from rdflib import Graph, Namespace, Literal, URIRef
 from rdflib.namespace import RDF, RDFS, XSD
 import pandas as pd

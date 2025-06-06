@@ -1,3 +1,14 @@
+#2. NER (Identificar marcas, productos, ubicaciones, fechas.)
+#- Archivo: `utils\ner_extractor.py`
+#- Llamado en: `utils\main_processor.py` (dentro del método `process_single_review`).
+#- ¿Qué Hace?: Utiliza la biblioteca `spaCy` para el Reconocimiento de Entidades Nombradas (NER). 
+#  Carga un modelo de lenguaje (ej. `es_core_news_sm`) y proporciona métodos como:  
+#    ¬ `extract_entities`: para identificar entidades generales, 
+#    ¬ `extract_entities_by_type`: para agruparlas por categoría (Persona, Organización, Ubicación, Fecha, etc.), 
+#    ¬ `extract_product_mentions` para identificar productos específicos y 
+#    ¬ `extract_brands`: para reconocer marcas. 
+#  El método `analyze_review` consolida todos estos resultados para una reseña.
+  
 import spacy
 import pandas as pd
 from typing import List, Dict, Tuple

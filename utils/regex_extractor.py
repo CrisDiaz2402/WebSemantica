@@ -1,3 +1,14 @@
+#1. Expresiones regulares (Encontrar menciones de precios, fechas, modelos.)
+#- Archivo: `utils\regex_extractor.py`
+#- Llamado en: `utils\main_processor.py` (dentro del método `process_single_review`).
+#- ¿Qué Hace?: Define patrones de expresiones regulares (`self.patterns`) para identificar y extraer: 
+#    ¬ precios (`extract_prices`), 
+#    ¬ fechas (`extract_dates`), 
+#    ¬ modelos (`extract_models`),
+#    ¬ calificaciones (`extract_ratings`) 
+#  del texto de las reseñas. También incluye una función `clean_text` para preprocesar el texto eliminando 
+#  URLs, menciones, hashtags y normalizando espacios.
+
 import re
 import pandas as pd
 from typing import List, Dict, Tuple

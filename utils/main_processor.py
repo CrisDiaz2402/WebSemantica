@@ -4,6 +4,8 @@ import json
 from datetime import datetime
 import os
 
+# Asumo que estas clases existen en el mismo directorio utils
+# y que sus implementaciones son correctas.
 from .regex_extractor import RegexExtractor
 from .ner_extractor import NERExtractor
 from .relationship_extractor import RelationshipExtractor
@@ -194,32 +196,4 @@ class OpinionExtractor:
             json.dump(report, f, ensure_ascii=False, indent=2)
         print(f"Reporte guardado en {filename}")
 
-def create_sample_csv():
-    """Crea un CSV de ejemplo para probar el sistema"""
-    sample_data = {
-        'review_text': [
-            "Compré el iPhone 14 Pro en Apple Store Madrid el 15 de marzo por €1200. La batería dura todo el día y la cámara es increíble. Lo recomiendo totalmente, 5 estrellas.",
-            "El Samsung Galaxy S23 que pedí en Amazon llegó con la pantalla rota. Muy decepcionante, tuve que devolverlo. El servicio al cliente fue terrible.",
-            "Los auriculares Sony WH-1000XM5 son fantásticos. El sonido es cristalino y la cancelación de ruido funciona perfectamente. Valen cada euro de los €350 que pagué.",
-            "Mi experiencia con el MacBook Pro M2 ha sido regular. Es rápido pero se calienta mucho y el precio de €2500 me parece excesivo para lo que ofrece.",
-            "El Google Pixel 7 que compré hace 2 meses empezó a fallar. La batería se agota muy rápido y a veces se reinicia solo. Contacté con el soporte técnico pero no me ayudaron.",
-            "Excelente producto el iPad Air. Lo uso para trabajo y entretenimiento. La pantalla es hermosa y el rendimiento es muy bueno. Apple siempre cumple.",
-            "Terrible experiencia con los AirPods Pro. Se me cayeron y dejaron de funcionar. Por €280 esperaba mejor calidad. No los recomiendo para deportes.",
-            "El Nintendo Switch que regalé a mi hijo funciona perfecto. Los juegos son divertidos y la consola es muy versátil. Buena compra por €300.",
-            "Huawei P50 Pro tiene una cámara espectacular, las fotos nocturnas son impresionantes. Lástima que no tenga servicios de Google, eso limita su uso.",
-            "Mi televisor LG OLED C2 de 55 pulgadas es una maravilla. Los colores son vibrantes y el contraste perfecto. Ideal para películas y gaming."
-        ],
-        'user_id': [f'user_{i}' for i in range(1, 11)],
-        'product_category': ['smartphone', 'smartphone', 'audio', 'laptop', 'smartphone', 'tablet', 'audio', 'gaming', 'smartphone', 'tv'],
-        'rating': [5, 1, 5, 3, 2, 4, 2, 4, 4, 5],
-        'date': ['2023-03-15', '2023-03-20', '2023-03-25', '2023-04-01', '2023-04-05', '2023-04-10', '2023-04-15', '2023-04-20', '2023-04-25', '2023-05-01']
-    }
-    
-    df = pd.DataFrame(sample_data)
-    
-    # Guardar en la carpeta documents
-    os.makedirs('documents', exist_ok=True)
-    csv_path = 'documents\data.csv'
-    df.to_csv(csv_path, index=False, encoding='utf-8')
-    print(f"Archivo {csv_path} creado con datos de ejemplo")
-    return csv_path
+# La función create_sample_csv ha sido eliminada de este archivo.
