@@ -82,6 +82,33 @@
   color: #667eea;
 }
 
+.chart-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #dc3545;
+  font-weight: 500;
+  text-align: center;
+  background: #f8f9fa;
+  border: 1px dashed #dc3545;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.chart-error i {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.chart-error small {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: normal;
+  opacity: 0.8;
+}
+
 .visualization-stats {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
@@ -237,4 +264,57 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/* Estilos para el estado de carga mejorado */
+.chart-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #6c757d;
+}
+
+.chart-loading i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #667eea;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.chart-loading p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Mejoras para el contenedor de gráficos */
+.chart-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.chart-container:hover::before {
+  opacity: 1;
 }
