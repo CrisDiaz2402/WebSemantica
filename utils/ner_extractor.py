@@ -2,7 +2,7 @@
 #- Archivo: `utils\ner_extractor.py`
 #- Llamado en: `utils\main_processor.py` (dentro del método `process_single_review`).
 #- ¿Qué Hace?: Utiliza la biblioteca `spaCy` para el Reconocimiento de Entidades Nombradas (NER). 
-#  Carga un modelo de lenguaje (ej. `es_core_news_sm`) y proporciona métodos como:  
+#  Carga un modelo de lenguaje (ej. `es_core_web_lg`) y proporciona métodos como:  
 #    ¬ `extract_entities`: para identificar entidades generales, 
 #    ¬ `extract_entities_by_type`: para agruparlas por categoría (Persona, Organización, Ubicación, Fecha, etc.), 
 #    ¬ `extract_product_mentions` para identificar productos específicos y 
