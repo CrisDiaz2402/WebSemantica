@@ -21,12 +21,12 @@ from typing import List, Dict, Tuple
 import re
 
 class SemanticSearch:
-    """Sistema de búsqueda semántica para reseñas"""
+    """Semantic search system for reviews"""
     
     def __init__(self):
         self.vectorizer = TfidfVectorizer(
             max_features=5000,
-            stop_words=None,  # Manejaremos stop words manualmente
+            stop_words=None,  # We'll handle stop words manually
             ngram_range=(1, 2),
             min_df=2,
             max_df=0.8
@@ -35,45 +35,45 @@ class SemanticSearch:
         self.documents = []
         self.metadata = []
         
-        # Stop words en español
-        self.spanish_stopwords = {
-            'el', 'la', 'de', 'que', 'y', 'a', 'en', 'un', 'es', 'se', 'no', 'te', 'lo', 'le',
-            'da', 'su', 'por', 'son', 'con', 'para', 'al', 'del', 'los', 'las', 'una', 'pero',
-            'sus', 'me', 'hasta', 'hay', 'donde', 'han', 'quien', 'están', 'estado', 'desde',
-            'todo', 'nos', 'durante', 'todos', 'uno', 'les', 'ni', 'contra', 'otros', 'ese',
-            'eso', 'ante', 'ellos', 'e', 'esto', 'mí', 'antes', 'algunos', 'qué', 'unos',
-            'yo', 'otro', 'otras', 'otra', 'él', 'tanto', 'esa', 'estos', 'mucho', 'quienes',
-            'nada', 'muchos', 'cual', 'poco', 'ella', 'estar', 'estas', 'algunas', 'algo',
-            'nosotros', 'mi', 'mis', 'tú', 'te', 'ti', 'tu', 'tus', 'ellas', 'nosotras'
+        # English stop words
+        self.english_stopwords = {
+            'the', 'and', 'is', 'in', 'to', 'of', 'a', 'for', 'it', 'on', 'with', 'as', 'this', 'that',
+            'at', 'by', 'an', 'be', 'are', 'from', 'was', 'or', 'but', 'not', 'have', 'has', 'had',
+            'they', 'you', 'we', 'he', 'she', 'his', 'her', 'their', 'them', 'our', 'us', 'were',
+            'can', 'will', 'would', 'should', 'could', 'may', 'might', 'do', 'does', 'did', 'so',
+            'if', 'about', 'which', 'who', 'whom', 'what', 'when', 'where', 'why', 'how', 'all',
+            'any', 'some', 'no', 'more', 'most', 'other', 'such', 'only', 'own', 'same', 'than',
+            'too', 'very', 'just', 'also', 'into', 'over', 'after', 'before', 'between', 'because',
+            'while', 'during', 'each', 'few', 'many', 'both', 'every', 'either', 'neither'
         }
     
     def preprocess_text(self, text: str) -> str:
-        """Preprocesa el texto para búsqueda"""
-        # Convertir a minúsculas
+        """Preprocesses text for search"""
+        # Lowercase
         text = text.lower()
         
-        # Eliminar caracteres especiales pero mantener espacios
+        # Remove special characters but keep spaces
         text = re.sub(r'[^\w\s]', ' ', text)
         
-        # Normalizar espacios
+        # Normalize spaces
         text = re.sub(r'\s+', ' ', text)
         
-        # Eliminar stop words
+        # Remove stop words
         words = text.split()
-        words = [word for word in words if word not in self.spanish_stopwords and len(word) > 2]
+        words = [word for word in words if word not in self.english_stopwords and len(word) > 2]
         
         return ' '.join(words)
     
     def index_documents(self, reviews: List[Dict[str, any]]):
-        """Indexa los documentos para búsqueda"""
+        """Indexes documents for search"""
         self.documents = []
         self.metadata = []
         
         for review in reviews:
-            # Combinar texto de la reseña con metadatos relevantes
+            # Combine review text with relevant metadata
             text_content = review.get('original_text', '')
             
-            # Añadir información de entidades y eventos si está disponible
+            # Add entity and event info if available
             if 'entities' in review:
                 for entity_type, entities in review['entities'].items():
                     text_content += ' ' + ' '.join(entities)
@@ -84,35 +84,35 @@ class SemanticSearch:
             if 'brands' in review:
                 text_content += ' ' + ' '.join(review['brands'])
             
-            # Preprocesar texto
+            # Preprocess text
             processed_text = self.preprocess_text(text_content)
             self.documents.append(processed_text)
             self.metadata.append(review)
         
-        # Crear vectores TF-IDF
+        # Create TF-IDF vectors
         if self.documents:
             self.document_vectors = self.vectorizer.fit_transform(self.documents)
     
     def search(self, query: str, top_k: int = 5) -> List[Dict[str, any]]:
-        """Realiza búsqueda semántica"""
+        """Performs semantic search"""
         if self.document_vectors is None:
             return []
         
-        # Preprocesar consulta
+        # Preprocess query
         processed_query = self.preprocess_text(query)
         
-        # Vectorizar consulta
+        # Vectorize query
         query_vector = self.vectorizer.transform([processed_query])
         
-        # Calcular similitudes
+        # Compute similarities
         similarities = cosine_similarity(query_vector, self.document_vectors).flatten()
         
-        # Obtener top-k resultados
+        # Get top-k results
         top_indices = np.argsort(similarities)[::-1][:top_k]
         
         results = []
         for idx in top_indices:
-            if similarities[idx] > 0:  # Solo incluir resultados con similitud > 0
+            if similarities[idx] > 0:  # Only include results with similarity > 0
                 result = self.metadata[idx].copy()
                 result['similarity_score'] = float(similarities[idx])
                 result['matched_text'] = self.documents[idx]
@@ -121,25 +121,25 @@ class SemanticSearch:
         return results
     
     def search_by_product(self, product_name: str, top_k: int = 5) -> List[Dict[str, any]]:
-        """Busca reseñas de un producto específico"""
-        query = f"producto {product_name} reseña opinión"
+        """Searches reviews for a specific product"""
+        query = f"product {product_name} review opinion"
         return self.search(query, top_k)
     
     def search_by_sentiment(self, sentiment: str, top_k: int = 5) -> List[Dict[str, any]]:
-        """Busca reseñas por sentimiento"""
+        """Searches reviews by sentiment"""
         sentiment_queries = {
-            'positivo': 'excelente bueno genial perfecto recomendado',
-            'negativo': 'malo terrible horrible defectuoso decepcionante',
-            'neutro': 'normal regular aceptable promedio'
+            'positive': 'excellent good great perfect recommended',
+            'negative': 'bad terrible horrible defective disappointing',
+            'neutral': 'average normal acceptable regular'
         }
         
         query = sentiment_queries.get(sentiment.lower(), sentiment)
         return self.search(query, top_k)
     
     def get_search_statistics(self) -> Dict[str, any]:
-        """Obtiene estadísticas del índice de búsqueda"""
+        """Gets search index statistics"""
         if self.document_vectors is None:
-            return {'error': 'No hay documentos indexados'}
+            return {'error': 'No documents indexed'}
         
         return {
             'total_documents': len(self.documents),

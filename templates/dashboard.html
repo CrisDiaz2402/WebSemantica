@@ -35,46 +35,46 @@
         {% elif success %}
         
         <div class="dashboard-grid">
-            <!-- Gráfico de Sentimientos -->
+            <!-- Sentiment Chart -->
             <div class="chart-container">
                 <h3><i class="fas fa-heart"></i> Distribución de Sentimientos</h3>
                 <div class="chart-placeholder">
                     <img src="{{ url_for('static', filename='images/sentiment_distribution.png') }}" 
-                         alt="Distribución de Sentimientos" class="chart-image">
+                         alt="Sentiment Distribution" class="chart-image">
                 </div>
             </div>
 
-            <!-- Gráfico de Productos -->
+            <!-- Product Chart -->
             <div class="chart-container">
                 <h3><i class="fas fa-box"></i> Productos Más Mencionados</h3>
                 <div class="chart-placeholder">
                     <img src="{{ url_for('static', filename='images/product_mentions.png') }}" 
-                         alt="Productos Más Mencionados" class="chart-image">
+                         alt="Most Mentioned Products" class="chart-image">
                 </div>
             </div>
 
-            <!-- Consultas SPARQL -->
+            <!-- SPARQL Queries -->
             <div class="sparql-container">
                 <h3><i class="fas fa-database"></i> Consultas al Grafo RDF</h3>
                 <div class="sparql-buttons">
-                    <button class="btn btn-primary" onclick="queryEvents('compra')">
+                    <button class="btn btn-primary" onclick="queryEvents('purchase')">
                         <i class="fas fa-shopping-cart"></i> Eventos de Compra
                     </button>
-                    <button class="btn btn-secondary" onclick="queryEvents('queja')">
+                    <button class="btn btn-secondary" onclick="queryEvents('complaint')">
                         <i class="fas fa-exclamation"></i> Eventos de Queja
                     </button>
-                    <button class="btn btn-info" onclick="queryProducts('positivo')">
+                    <button class="btn btn-info" onclick="queryProducts('positive')">
                         <i class="fas fa-thumbs-up"></i> Productos Positivos
                     </button>
                 </div>
                 <div id="sparql-results" class="sparql-results"></div>
             </div>
 
-            <!-- Búsqueda Avanzada -->
+            <!-- Advanced Search -->
             <div class="advanced-search">
                 <h3><i class="fas fa-search-plus"></i> Búsqueda Avanzada</h3>
                 <div class="search-options">
-                    <input type="text" id="product-search" placeholder="Buscar por producto...">
+                    <input type="text" id="product-search" placeholder="Search by product...">
                     <button onclick="searchByProduct()" class="btn btn-primary">Buscar</button>
                 </div>
                 <div id="advanced-results" class="search-results"></div>
@@ -85,7 +85,7 @@
     </div>
 
     <script>
-        // Funciones para consultas SPARQL
+        // Functions for SPARQL queries
         async function queryEvents(eventType) {
             try {
                 const response = await fetch(`/api/events/${eventType}`);
@@ -93,14 +93,14 @@
                 
                 const resultsDiv = document.getElementById('sparql-results');
                 if (data.events && data.events.length > 0) {
-                    let html = `<h4>Eventos de ${eventType} (${data.total})</h4><ul>`;
+                    let html = `<h4>${eventType.charAt(0).toUpperCase() + eventType.slice(1)} Events (${data.total})</h4><ul>`;
                     data.events.slice(0, 5).forEach(event => {
-                        html += `<li>${event.actor || 'Usuario'} - ${event.object || 'Producto'} (${event.sentiment || 'neutro'})</li>`;
+                        html += `<li>${event.actor || 'User'} - ${event.object || 'Product'} (${event.sentiment || 'neutral'})</li>`;
                     });
                     html += '</ul>';
                     resultsDiv.innerHTML = html;
                 } else {
-                    resultsDiv.innerHTML = `<p>No se encontraron eventos de ${eventType}</p>`;
+                    resultsDiv.innerHTML = `<p>No ${eventType} events found</p>`;
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -114,14 +114,14 @@
                 
                 const resultsDiv = document.getElementById('sparql-results');
                 if (data.products && data.products.length > 0) {
-                    let html = `<h4>Productos con sentimiento ${sentiment} (${data.total})</h4><ul>`;
+                    let html = `<h4>Products with ${sentiment} sentiment (${data.total})</h4><ul>`;
                     data.products.slice(0, 5).forEach(product => {
                         html += `<li>${product}</li>`;
                     });
                     html += '</ul>';
                     resultsDiv.innerHTML = html;
                 } else {
-                    resultsDiv.innerHTML = `<p>No se encontraron productos con sentimiento ${sentiment}</p>`;
+                    resultsDiv.innerHTML = `<p>No products found with ${sentiment} sentiment</p>`;
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -138,19 +138,19 @@
                 
                 const resultsDiv = document.getElementById('advanced-results');
                 if (data.results && data.results.length > 0) {
-                    let html = `<h4>Resultados para "${product}" (${data.total})</h4>`;
+                    let html = `<h4>Results for "${product}" (${data.total})</h4>`;
                     data.results.forEach(result => {
                         html += `
                             <div class="result-item">
                                 <p><strong>Score:</strong> ${result.score}</p>
-                                <p><strong>Sentimiento:</strong> ${result.sentiment}</p>
+                                <p><strong>Sentiment:</strong> ${result.sentiment}</p>
                                 <p>${result.text}</p>
                             </div>
                         `;
                     });
                     resultsDiv.innerHTML = html;
                 } else {
-                    resultsDiv.innerHTML = `<p>No se encontraron resultados para "${product}"</p>`;
+                    resultsDiv.innerHTML = `<p>No results found for "${product}"</p>`;
                 }
             } catch (error) {
                 console.error('Error:', error);

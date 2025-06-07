@@ -19,12 +19,12 @@ import pandas as pd
 from typing import List, Dict, Tuple
 
 class KnowledgeRepresentation:
-    """Representación del conocimiento usando RDF"""
+    """Knowledge representation using RDF"""
     
     def __init__(self):
         self.graph = Graph()
         
-        # Definir namespaces
+        # Define namespaces
         self.REVIEW = Namespace("http://example.org/review/")
         self.PRODUCT = Namespace("http://example.org/product/")
         self.USER = Namespace("http://example.org/user/")
@@ -38,8 +38,8 @@ class KnowledgeRepresentation:
         self.graph.bind("rdfs", RDFS)
     
     def add_triple(self, subject: str, predicate: str, obj: str, obj_type: str = "literal"):
-        """Añade una tripleta al grafo RDF"""
-        # Crear URIs
+        """Adds a triple to the RDF graph"""
+        # Create URIs
         subj_uri = self._create_uri(subject, "user")
         pred_uri = self._create_predicate_uri(predicate)
         
@@ -51,7 +51,7 @@ class KnowledgeRepresentation:
         self.graph.add((subj_uri, pred_uri, obj_node))
     
     def _create_uri(self, name: str, type_prefix: str) -> URIRef:
-        """Crea una URI basada en el nombre y tipo"""
+        """Creates a URI based on name and type"""
         clean_name = name.replace(" ", "_").replace("-", "_")
         
         if type_prefix == "user":
@@ -64,19 +64,19 @@ class KnowledgeRepresentation:
             return self.REVIEW[clean_name]
     
     def _create_predicate_uri(self, predicate: str) -> URIRef:
-        """Crea una URI para el predicado"""
+        """Creates a URI for the predicate"""
         clean_predicate = predicate.replace(" ", "_").replace("-", "_")
         return self.REVIEW[clean_predicate]
     
     def add_event_to_graph(self, event: Dict[str, any], review_id: str):
-        """Añade un evento al grafo RDF"""
+        """Adds an event to the RDF graph"""
         event_id = f"event_{review_id}_{event['type']}"
         event_uri = self._create_uri(event_id, "event")
         
-        # Añadir tipo de evento
+        # Add event type
         self.graph.add((event_uri, RDF.type, self.EVENT[event['type'].capitalize()]))
         
-        # Añadir propiedades del evento
+        # Add event properties
         if event.get('actor'):
             actor_uri = self._create_uri(event['actor'], "user")
             self.graph.add((event_uri, self.EVENT.hasActor, actor_uri))
@@ -88,21 +88,21 @@ class KnowledgeRepresentation:
         if event.get('sentiment'):
             self.graph.add((event_uri, self.EVENT.hasSentiment, Literal(event['sentiment'])))
         
-        # Añadir trigger
+        # Add trigger
         self.graph.add((event_uri, self.EVENT.hasTrigger, Literal(event['trigger'])))
     
     def create_product_sentiment_graph(self, reviews_data: List[Dict[str, any]]):
-        """Crea un grafo de productos y sentimientos"""
+        """Creates a graph of products and sentiments"""
         for review in reviews_data:
             review_id = review.get('id', 'unknown')
             
-            # Añadir eventos
+            # Add events
             if 'events' in review:
                 for event in review['events']:
                     self.add_event_to_graph(event, review_id)
     
     def query_products_by_sentiment(self, sentiment: str) -> List[str]:
-        """Consulta productos por sentimiento"""
+        """Query products by sentiment"""
         query = f"""
         SELECT ?product WHERE {{
             ?event event:hasSentiment "{sentiment}" .
@@ -118,12 +118,12 @@ class KnowledgeRepresentation:
             return []
     
     def export_to_turtle(self, filename: str):
-        """Exporta el grafo a formato Turtle"""
+        """Exports the graph to Turtle format"""
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(self.graph.serialize(format='turtle'))
     
     def get_graph_stats(self) -> Dict[str, int]:
-        """Obtiene estadísticas del grafo"""
+        """Gets graph statistics"""
         return {
             'total_triples': len(self.graph),
             'unique_subjects': len(set(s for s, p, o in self.graph)),

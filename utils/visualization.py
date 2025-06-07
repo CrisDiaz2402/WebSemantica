@@ -14,9 +14,9 @@ class OpinionVisualizer:
     def __init__(self):
         plt.style.use('default')
         self.colors = {
-            'positivo': '#2E8B57',  # Verde
-            'negativo': '#DC143C',  # Rojo
-            'neutro': '#4682B4'     # Azul
+            'positive': '#2E8B57',  # Verde
+            'negative': '#DC143C',  # Rojo
+            'neutral': '#4682B4'     # Azul
         }
     
     def load_processed_data(self, json_file: str) -> List[Dict[str, Any]]:
@@ -30,11 +30,11 @@ class OpinionVisualizer:
     
     def create_sentiment_chart(self, processed_reviews: List[Dict[str, Any]]) -> str:
         """Crea gráfico de distribución de sentimientos"""
-        sentiment_counts = {'positivo': 0, 'negativo': 0, 'neutro': 0}
+        sentiment_counts = {'positive': 0, 'negative': 0, 'neutral': 0}
         
         for review in processed_reviews:
             for event in review.get('events', []):
-                sentiment = event.get('sentiment', 'neutro')
+                sentiment = event.get('sentiment', 'neutral')
                 sentiment_counts[sentiment] = sentiment_counts.get(sentiment, 0) + 1
         
         # Crear gráfico

@@ -11,41 +11,38 @@ from typing import List, Dict, Tuple
 from datetime import datetime
 
 class EventExtractor:
-    """Extractor de eventos de reseñas de productos"""
+    """Extractor of events from product reviews"""
     
-    def __init__(self, model_name: str = "es_core_news_sm"):
+    def __init__(self, model_name: str = "en_core_web_lg"):
         try:
             self.nlp = spacy.load(model_name)
         except OSError:
-            try:
-                self.nlp = spacy.load("en_core_web_sm")
-            except OSError:
-                import subprocess
-                import sys
-                subprocess.check_call([sys.executable, '-m', 'spacy', 'download', 'en_core_web_sm'])
-                self.nlp = spacy.load("en_core_web_sm")
+            import subprocess
+            import sys
+            subprocess.check_call([sys.executable, '-m', 'spacy', 'download', 'en_core_web_lg'])
+            self.nlp = spacy.load("en_core_web_lg")
         
-        # Definir tipos de eventos y sus triggers
+        # Define event types and their triggers (in English)
         self.event_triggers = {
-            'compra': ['compré', 'compró', 'adquirí', 'pedí', 'ordené', 'conseguí'],
-            'devolución': ['devolví', 'regresé', 'retorné', 'cambié'],
-            'queja': ['me quejo', 'reclamo', 'protesto', 'molesto'],
-            'recomendación': ['recomiendo', 'sugiero', 'aconsejo'],
-            'fallo': ['falló', 'rompió', 'dejó de funcionar', 'no funciona', 'defectuoso'],
-            'funcionamiento': ['funciona bien', 'trabaja perfectamente', 'opera correctamente'],
-            'entrega': ['llegó', 'recibí', 'entregaron', 'arribó'],
-            'calificación': ['califico', 'puntúo', 'valoro', 'doy estrellas']
+            'purchase': ['bought', 'purchased', 'ordered', 'acquired', 'got'],
+            'return': ['returned', 'sent back', 'exchanged', 'gave back'],
+            'complaint': ['complain', 'complained', 'claim', 'protest', 'upset'],
+            'recommendation': ['recommend', 'suggest', 'advise'],
+            'failure': ['failed', 'broke', 'stopped working', 'does not work', 'defective'],
+            'function': ['works well', 'works perfectly', 'operates correctly'],
+            'delivery': ['arrived', 'received', 'delivered', 'came'],
+            'rating': ['rate', 'score', 'value', 'give stars']
         }
         
-        # Patrones de sentimientos
+        # Sentiment patterns in English
         self.sentiment_patterns = {
-            'positivo': ['excelente', 'bueno', 'genial', 'perfecto', 'increíble', 'recomendado'],
-            'negativo': ['malo', 'terrible', 'horrible', 'defectuoso', 'roto', 'decepcionante'],
-            'neutro': ['normal', 'regular', 'aceptable', 'promedio']
+            'positive': ['excellent', 'good', 'great', 'perfect', 'amazing', 'recommended'],
+            'negative': ['bad', 'terrible', 'horrible', 'defective', 'broken', 'disappointing'],
+            'neutral': ['normal', 'average', 'acceptable', 'regular']
         }
     
     def extract_events(self, text: str, entities: Dict[str, any]) -> List[Dict[str, any]]:
-        """Extrae eventos del texto"""
+        """Extracts events from text"""
         events = []
         text_lower = text.lower()
         
@@ -59,7 +56,7 @@ class EventExtractor:
         return events
     
     def _create_event(self, text: str, trigger: str, event_type: str, entities: Dict[str, any]) -> Dict[str, any]:
-        """Crea un evento estructurado"""
+        """Creates a structured event"""
         event = {
             'type': event_type,
             'trigger': trigger,
@@ -71,38 +68,38 @@ class EventExtractor:
             'confidence': 0.7
         }
         
-        # Extraer actor (persona)
-        persons = entities.get('Persona', [])
+        # Extract actor (person)
+        persons = entities.get('Person', [])
         if persons:
-            event['actor'] = persons[0]  # Tomar la primera persona mencionada
+            event['actor'] = persons[0]  # Take the first mentioned person
         
-        # Extraer objeto (producto)
-        products = entities.get('products', []) + entities.get('Producto', [])
+        # Extract object (product)
+        products = entities.get('Product', []) + entities.get('products', [])
         if products:
-            event['object'] = products[0]  # Tomar el primer producto mencionado
+            event['object'] = products[0]  # Take the first mentioned product
         
-        # Extraer tiempo
-        dates = entities.get('Fecha', [])
+        # Extract time
+        dates = entities.get('Date', [])
         if dates:
             event['time'] = dates[0]
         
-        # Extraer ubicación
-        locations = entities.get('Ubicación', [])
+        # Extract location
+        locations = entities.get('Location', [])
         if locations:
             event['location'] = locations[0]
         
         return event
     
     def _extract_sentiment(self, text: str) -> str:
-        """Extrae el sentimiento del texto"""
+        """Extracts sentiment from text"""
         text_lower = text.lower()
         
-        positive_count = sum(1 for word in self.sentiment_patterns['positivo'] if word in text_lower)
-        negative_count = sum(1 for word in self.sentiment_patterns['negativo'] if word in text_lower)
+        positive_count = sum(1 for word in self.sentiment_patterns['positive'] if word in text_lower)
+        negative_count = sum(1 for word in self.sentiment_patterns['negative'] if word in text_lower)
         
         if positive_count > negative_count:
-            return 'positivo'
+            return 'positive'
         elif negative_count > positive_count:
-            return 'negativo'
+            return 'negative'
         else:
-            return 'neutro'
+            return 'neutral'

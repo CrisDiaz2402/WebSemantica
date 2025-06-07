@@ -111,33 +111,6 @@ async function handleDataProcessing() {
   }
 }
 
-// async function generateSampleData() {
-//   if (isProcessing) return
-
-//   isProcessing = true
-//   showLoading(true)
-
-//   try {
-//     const response = await fetch("/generate_sample")
-//     const result = await response.json()
-
-//     if (response.ok) {
-//       showNotification(result.message, "success")
-//       // Verificar archivo nuevamente después de generar datos
-//       await checkDataFile()
-//       loadStats()
-//     } else {
-//       showNotification(result.error || "Error generando datos", "error")
-//     }
-//   } catch (error) {
-//     console.error("Error:", error)
-//     showNotification("Error de conexión", "error")
-//   } finally {
-//     isProcessing = false
-//     showLoading(false)
-//   }
-// }
-
 async function performSearch() {
   const query = searchInput.value.trim()
 

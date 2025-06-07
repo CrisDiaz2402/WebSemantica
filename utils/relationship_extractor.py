@@ -11,109 +11,106 @@ from typing import List, Dict, Tuple
 import re
 
 class RelationshipExtractor:
-    """Extractor de relaciones entre entidades"""
-    
-    def __init__(self, model_name: str = "es_core_news_sm"):
+    """Extractor of relations between entities"""
+
+    def __init__(self, model_name: str = "en_core_web_lg"):
         try:
             self.nlp = spacy.load(model_name)
         except OSError:
-            try:
-                self.nlp = spacy.load("en_core_web_sm")
-            except OSError:
-                import subprocess
-                import sys
-                subprocess.check_call([sys.executable, '-m', 'spacy', 'download', 'en_core_web_sm'])
-                self.nlp = spacy.load("en_core_web_sm")
-        
-        # Patrones de relaciones comunes
+            import subprocess
+            import sys
+            subprocess.check_call([sys.executable, '-m', 'spacy', 'download', 'en_core_web_lg'])
+            self.nlp = spacy.load("en_core_web_lg")
+
+        # Common relation patterns in English
         self.relation_patterns = {
-            'compra': ['compré', 'compró', 'adquirí', 'pedí', 'ordené'],
-            'recomendación': ['recomiendo', 'recomendó', 'sugiero', 'aconsejo'],
-            'fabricación': ['fabricado por', 'hecho por', 'de la marca', 'marca'],
-            'ubicación': ['en', 'desde', 'ubicado en', 'de'],
-            'tiempo': ['el', 'en', 'durante', 'hace'],
-            'calificación': ['califico', 'puntúo', 'valoro', 'doy'],
-            'problema': ['falló', 'roto', 'defectuoso', 'problema', 'error'],
-            'funcionamiento': ['funciona', 'trabaja', 'opera', 'sirve']
+            'purchase': ['bought', 'purchased', 'ordered', 'acquired'],
+            'recommendation': ['recommend', 'suggest', 'advise'],
+            'manufacture': ['manufactured by', 'made by', 'from brand', 'brand'],
+            'location': ['in', 'from', 'located in', 'of'],
+            'time': ['on', 'in', 'during', 'ago'],
+            'rating': ['rate', 'score', 'value', 'give'],
+            'problem': ['failed', 'broken', 'defective', 'problem', 'error'],
+            'function': ['works', 'operates', 'serves', 'functions']
         }
-    
+
     def extract_subject_verb_object(self, text: str) -> List[Tuple[str, str, str]]:
-        """Extrae relaciones sujeto-verbo-objeto básicas"""
+        """Extracts basic subject-verb-object relations"""
         doc = self.nlp(text)
         relations = []
-        
+
         for sent in doc.sents:
-            # Buscar el verbo principal
+            # Find the main verb
             root_verb = None
             for token in sent:
                 if token.dep_ == "ROOT" and token.pos_ == "VERB":
                     root_verb = token
                     break
-            
+
             if root_verb:
-                # Buscar sujeto
+                # Find subject
                 subject = None
                 for child in root_verb.children:
                     if child.dep_ in ["nsubj", "nsubjpass"]:
                         subject = self._get_full_phrase(child)
                         break
-                
-                # Buscar objeto
+
+                # Find object
                 obj = None
                 for child in root_verb.children:
                     if child.dep_ in ["dobj", "pobj", "attr"]:
                         obj = self._get_full_phrase(child)
                         break
-                
+
                 if subject and obj:
                     relations.append((subject, root_verb.lemma_, obj))
-        
+
         return relations
-    
+
     def _get_full_phrase(self, token) -> str:
-        """Obtiene la frase completa incluyendo modificadores"""
+        """Gets the full phrase including modifiers"""
         phrase_tokens = [token]
-        
-        # Agregar modificadores a la izquierda
+
+        # Add left modifiers
         for child in token.children:
             if child.dep_ in ["det", "amod", "compound", "nmod"]:
                 phrase_tokens.append(child)
-        
-        # Ordenar por posición en el texto
+
+        # Sort by position in text
         phrase_tokens.sort(key=lambda x: x.i)
         return " ".join([t.text for t in phrase_tokens])
-    
+
     def extract_purchase_relations(self, text: str, entities: Dict[str, List[str]]) -> List[Dict[str, str]]:
-        """Extrae relaciones específicas de compra"""
+        """Extracts specific purchase relations"""
         relations = []
         text_lower = text.lower()
-        
-        # Buscar patrones de compra
-        purchase_verbs = self.relation_patterns['compra']
-        
+
+        # Look for purchase patterns
+        purchase_verbs = self.relation_patterns['purchase']
+
         for verb in purchase_verbs:
             if verb in text_lower:
-                # Intentar encontrar quién compró qué
-                persons = entities.get('Persona', [])
-                products = entities.get('Producto', []) + entities.get('products', [])
-                
+                # Try to find who bought what
+                persons = entities.get('Person', [])  # English entity label
+                products = entities.get('Product', []) + entities.get('products', [])
+
                 for person in persons:
                     for product in products:
                         if person.lower() in text_lower and product.lower() in text_lower:
                             relations.append({
                                 'subject': person,
-                                'predicate': 'compró',
+                                'predicate': 'bought',
                                 'object': product,
                                 'confidence': 0.8
                             })
-        
+
         return relations
-    
+
     def extract_all_relations(self, text: str, entities: Dict[str, any]) -> List[Dict[str, str]]:
-        """Extrae todas las relaciones posibles del texto"""
+        """Extracts all possible relations from the text"""
         all_relations = []
-        
-        # Relaciones básicas sujeto-verbo-objeto
+
+        # Basic subject-verb-object relations
         svo_relations = self.extract_subject_verb_object(text)
         for subj, verb, obj in svo_relations:
             all_relations.append({
@@ -123,8 +120,8 @@ class RelationshipExtractor:
                 'confidence': 0.5,
                 'type': 'svo'
             })
-        
-        # Relaciones específicas
+
+        # Specific relations
         all_relations.extend(self.extract_purchase_relations(text, entities))
-        
+
         return all_relations
