@@ -144,7 +144,7 @@ class OpinionExtractor:
         all_products = []
         all_brands = []
         all_events = []
-        sentiment_counts = {'positivo': 0, 'negativo': 0, 'neutro': 0}
+        sentiment_counts = {'positive': 0, 'negative': 0, 'neutral': 0}
         
         for review in self.processed_reviews:
             all_products.extend(review.get('products', []))
@@ -153,7 +153,7 @@ class OpinionExtractor:
             
             # Contar sentimientos de eventos
             for event in review.get('events', []):
-                sentiment = event.get('sentiment', 'neutro')
+                sentiment = event.get('sentiment', 'neutral')
                 sentiment_counts[sentiment] = sentiment_counts.get(sentiment, 0) + 1
         
         # Productos y marcas más mencionados

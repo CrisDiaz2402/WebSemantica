@@ -23,7 +23,7 @@ class NERExtractor:
         except OSError:
             print(f"Model {model_name} not found. Trying Spanish model...")
             try:
-                self.nlp = spacy.load("es_core_news_lg")
+                self.nlp = spacy.load("en_core_web_lg")
             except OSError:
                 print("No spaCy model found. Installing basic English model...")
                 import subprocess

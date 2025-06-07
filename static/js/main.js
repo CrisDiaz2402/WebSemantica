@@ -274,11 +274,11 @@ function animateNumber(element, targetValue) {
 
 function getSentimentIcon(sentiment) {
   switch (sentiment) {
-    case "positivo":
+    case "positive":
       return '<i class="fas fa-smile"></i>'
-    case "negativo":
+    case "negative":
       return '<i class="fas fa-frown"></i>'
-    case "neutro":
+    case "neutral":
       return '<i class="fas fa-meh"></i>'
     default:
       return '<i class="fas fa-question"></i>'
@@ -287,11 +287,11 @@ function getSentimentIcon(sentiment) {
 
 function getSentimentClass(sentiment) {
   switch (sentiment) {
-    case "positivo":
+    case "positive":
       return "sentiment-positive"
-    case "negativo":
+    case "negative":
       return "sentiment-negative"
-    case "neutro":
+    case "neutral":
       return "sentiment-neutral"
     default:
       return "sentiment-unknown"
