@@ -42,74 +42,139 @@
                     <h3>{{ report.resumen_general.total_reseñas }}</h3>
                     <p>Reseñas Procesadas</p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card clickable-card" onclick="toggleProductsList()" style="cursor: pointer;">
                     <i class="fas fa-box"></i>
                     <h3>{{ report.resumen_general.productos_únicos }}</h3>
                     <p>Productos Únicos</p>
+                    <small style="opacity: 0.8; font-size: 0.8rem;">Haz clic para ver lista</small>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card clickable-card" onclick="toggleBrandsList()" style="cursor: pointer;">
                     <i class="fas fa-tags"></i>
                     <h3>{{ report.resumen_general.marcas_únicas }}</h3>
                     <p>Marcas Únicas</p>
+                    <small style="opacity: 0.8; font-size: 0.8rem;">Haz clic para ver lista</small>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card clickable-card" onclick="toggleEventsList()" style="cursor: pointer;">
                     <i class="fas fa-calendar-alt"></i>
                     <h3>{{ report.resumen_general.eventos_totales }}</h3>
                     <p>Eventos Totales</p>
+                    <small style="opacity: 0.8; font-size: 0.8rem;">Haz clic para ver lista</small>
                 </div>
             </div>
         </div>
 
-        <div class="analytics-section">
-            <h2><i class="fas fa-trophy"></i> Productos Más Mencionados</h2>
-            <div class="ranking-list">
-                {% for product, count in (report.productos_más_mencionados.items()|list)[:10] %}
-                <div class="ranking-item">
-                    <span class="rank">{{ loop.index }}</span>
-                    <span class="name">{{ product }}</span>
-                    <span class="count">{{ count }} menciones</span>
+        <!-- Lista desplegable de productos -->
+        <div id="products-list" class="analytics-section" style="display: none;">
+            <h2><i class="fas fa-box"></i> Lista Completa de Productos</h2>
+            <div class="simple-list">
+                {% for product, count in report.productos_más_mencionados.items() %}
+                <div class="list-item">
+                    <span class="item-name">{{ product }}</span>
+                    <span class="item-count">{{ count }} menciones</span>
                 </div>
                 {% endfor %}
             </div>
+            <button onclick="toggleProductsList()" class="btn btn-secondary" style="margin-top: 1rem;">
+                <i class="fas fa-times"></i> Cerrar Lista
+            </button>
+        </div>
+
+        <!-- Lista desplegable de marcas -->
+        <div id="brands-list" class="analytics-section" style="display: none;">
+            <h2><i class="fas fa-tags"></i> Lista Completa de Marcas</h2>
+            <div class="simple-list">
+                {% for brand, count in report.marcas_más_mencionadas.items() %}
+                <div class="list-item">
+                    <span class="item-name">{{ brand }}</span>
+                    <span class="item-count">{{ count }} menciones</span>
+                </div>
+                {% endfor %}
+            </div>
+            <button onclick="toggleBrandsList()" class="btn btn-secondary" style="margin-top: 1rem;">
+                <i class="fas fa-times"></i> Cerrar Lista
+            </button>
+        </div>
+
+        <!-- Lista desplegable de eventos -->
+        <div id="events-list" class="analytics-section" style="display: none;">
+            <h2><i class="fas fa-calendar-alt"></i> Lista Completa de Tipos de Eventos</h2>
+            <div class="simple-list">
+                {% for event_type, count in report.tipos_eventos_más_comunes.items() %}
+                <div class="list-item">
+                    <span class="item-name">{{ event_type.title() }}</span>
+                    <span class="item-count">{{ count }} eventos</span>
+                </div>
+                {% endfor %}
+            </div>
+            <button onclick="toggleEventsList()" class="btn btn-secondary" style="margin-top: 1rem;">
+                <i class="fas fa-times"></i> Cerrar Lista
+            </button>
         </div>
 
         <div class="analytics-section">
             <h2><i class="fas fa-heart"></i> Distribución de Sentimientos</h2>
             <div class="sentiment-stats">
-                {% set total_sentiments = report.distribución_sentimientos.positivo + report.distribución_sentimientos.negativo + report.distribución_sentimientos.neutro %}
-                
-                <div class="sentiment-item positive">
-                    <i class="fas fa-smile"></i>
-                    <div class="sentiment-info">
-                        <h3>Positivo</h3>
-                        <p>{{ report.distribución_sentimientos.positivo }} eventos</p>
-                        {% if total_sentiments > 0 %}
-                        <p>({{ "%.1f"|format(report.distribución_sentimientos.positivo / total_sentiments * 100) }}%)</p>
-                        {% endif %}
+                {% if report.distribución_sentimientos %}
+                    {% set sentiment_data = report.distribución_sentimientos %}
+                    
+                    <!-- Manejar diferentes estructuras de datos de sentimientos -->
+                    {% if sentiment_data.get('positivo') is not none %}
+                        {% set positive_count = sentiment_data.positivo %}
+                        {% set negative_count = sentiment_data.negativo %}
+                        {% set neutral_count = sentiment_data.neutro %}
+                    {% elif sentiment_data.get('positive') is not none %}
+                        {% set positive_count = sentiment_data.positive %}
+                        {% set negative_count = sentiment_data.negative %}
+                        {% set neutral_count = sentiment_data.neutral %}
+                    {% else %}
+                        {% set positive_count = sentiment_data.get('positivo', sentiment_data.get('positive', 0)) %}
+                        {% set negative_count = sentiment_data.get('negativo', sentiment_data.get('negative', 0)) %}
+                        {% set neutral_count = sentiment_data.get('neutro', sentiment_data.get('neutral', 0)) %}
+                    {% endif %}
+                    
+                    {% set total_sentiments = positive_count + negative_count + neutral_count %}
+                    
+                    <div class="sentiment-item positive">
+                        <i class="fas fa-smile"></i>
+                        <div class="sentiment-info">
+                            <h3>Positivo</h3>
+                            <p>{{ positive_count }} eventos</p>
+                            {% if total_sentiments > 0 %}
+                            <p>({{ "%.1f"|format(positive_count / total_sentiments * 100) }}%)</p>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-                
-                <div class="sentiment-item negative">
-                    <i class="fas fa-frown"></i>
-                    <div class="sentiment-info">
-                        <h3>Negativo</h3>
-                        <p>{{ report.distribución_sentimientos.negativo }} eventos</p>
-                        {% if total_sentiments > 0 %}
-                        <p>({{ "%.1f"|format(report.distribución_sentimientos.negativo / total_sentiments * 100) }}%)</p>
-                        {% endif %}
+                    
+                    <div class="sentiment-item negative">
+                        <i class="fas fa-frown"></i>
+                        <div class="sentiment-info">
+                            <h3>Negativo</h3>
+                            <p>{{ negative_count }} eventos</p>
+                            {% if total_sentiments > 0 %}
+                            <p>({{ "%.1f"|format(negative_count / total_sentiments * 100) }}%)</p>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-                
-                <div class="sentiment-item neutral">
-                    <i class="fas fa-meh"></i>
-                    <div class="sentiment-info">
-                        <h3>Neutro</h3>
-                        <p>{{ report.distribución_sentimientos.neutro }} eventos</p>
-                        {% if total_sentiments > 0 %}
-                        <p>({{ "%.1f"|format(report.distribución_sentimientos.neutro / total_sentiments * 100) }}%)</p>
-                        {% endif %}
+                    
+                    <div class="sentiment-item neutral">
+                        <i class="fas fa-meh"></i>
+                        <div class="sentiment-info">
+                            <h3>Neutro</h3>
+                            <p>{{ neutral_count }} eventos</p>
+                            {% if total_sentiments > 0 %}
+                            <p>({{ "%.1f"|format(neutral_count / total_sentiments * 100) }}%)</p>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="sentiment-item neutral">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="sentiment-info">
+                            <h3>Sin datos</h3>
+                            <p>No hay información de sentimientos disponible</p>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
@@ -157,13 +222,91 @@
         </div>
         {% endif %}
     </div>
+
+    <script>
+        // Funciones para mostrar/ocultar listas
+        function toggleProductsList() {
+            const list = document.getElementById('products-list');
+            list.style.display = list.style.display === 'none' ? 'block' : 'none';
+            
+            // Scroll suave hacia la lista si se está mostrando
+            if (list.style.display === 'block') {
+                list.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function toggleBrandsList() {
+            const list = document.getElementById('brands-list');
+            list.style.display = list.style.display === 'none' ? 'block' : 'none';
+            
+            if (list.style.display === 'block') {
+                list.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function toggleEventsList() {
+            const list = document.getElementById('events-list');
+            list.style.display = list.style.display === 'none' ? 'block' : 'none';
+            
+            if (list.style.display === 'block') {
+                list.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Animación de barras de eventos (código existente)
+        document.querySelectorAll('.event-fill').forEach(bar => {
+            const count = parseInt(bar.dataset.count);
+            const max = parseInt(bar.dataset.max);
+            const percentage = (count / max) * 100;
+            bar.style.width = percentage + '%';
+        });
+    </script>
+
+    <style>
+        /* Estilos adicionales para las listas desplegables */
+        .clickable-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .simple-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e1e5e9;
+            transition: background-color 0.2s ease;
+        }
+
+        .list-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .item-count {
+            color: #6c757d;
+            font-size: 0.9rem;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+        }
+    </style>
 </body>
 </html>
-<script>
-document.querySelectorAll('.event-fill').forEach(bar => {
-    const count = parseInt(bar.dataset.count);
-    const max = parseInt(bar.dataset.max);
-    const percentage = (count / max) * 100;
-    bar.style.width = percentage + '%';
-});
-</script>
