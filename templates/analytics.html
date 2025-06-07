@@ -46,13 +46,13 @@
                     <i class="fas fa-box"></i>
                     <h3>{{ report.resumen_general.productos_únicos }}</h3>
                     <p>Productos Únicos</p>
-                    <small style="opacity: 0.8; font-size: 0.8rem;">Haz clic para ver lista</small>
+                    <small style="opacity: 0.8; font-size: 0.8rem;">Haz clic para ver lista completa</small>
                 </div>
                 <div class="stat-card clickable-card" onclick="toggleBrandsList()" style="cursor: pointer;">
                     <i class="fas fa-tags"></i>
                     <h3>{{ report.resumen_general.marcas_únicas }}</h3>
                     <p>Marcas Únicas</p>
-                    <small style="opacity: 0.8; font-size: 0.8rem;">Haz clic para ver lista</small>
+                    <small style="opacity: 0.8; font-size: 0.8rem;">Haz clic para ver todas las {{ report.marcas_más_mencionadas|length }} marcas</small>
                 </div>
                 <div class="stat-card clickable-card" onclick="toggleEventsList()" style="cursor: pointer;">
                     <i class="fas fa-calendar-alt"></i>
@@ -63,9 +63,44 @@
             </div>
         </div>
 
+        <!-- Debug info para marcas -->
+        {% if report.análisis_marcas_detallado %}
+        <div class="analytics-section">
+            <h2><i class="fas fa-bug"></i> Análisis de Marcas (Debug)</h2>
+            <div class="debug-info">
+                <div class="debug-card">
+                    <h4>Estadísticas de Procesamiento</h4>
+                    <p><strong>Marcas brutas detectadas:</strong> {{ report.análisis_marcas_detallado.total_raw_brands }}</p>
+                    <p><strong>Marcas después de limpieza:</strong> {{ report.análisis_marcas_detallado.total_cleaned_brands }}</p>
+                    <p><strong>Marcas mostradas en lista:</strong> {{ report.marcas_más_mencionadas|length }}</p>
+                </div>
+                
+                {% if report.análisis_marcas_detallado.duplicate_examples %}
+                <div class="debug-card">
+                    <h4>Ejemplos de Duplicados Detectados</h4>
+                    <ul>
+                        {% for duplicate in report.análisis_marcas_detallado.duplicate_examples %}
+                        <li>{{ duplicate }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                {% if report.análisis_marcas_detallado.brand_variations %}
+                <div class="debug-card">
+                    <h4>Variaciones Normalizadas</h4>
+                    {% for clean_brand, variations in report.análisis_marcas_detallado.brand_variations.items() %}
+                    <p><strong>{{ clean_brand }}:</strong> {{ variations|join(', ') }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Lista desplegable de productos -->
         <div id="products-list" class="analytics-section" style="display: none;">
-            <h2><i class="fas fa-box"></i> Lista Completa de Productos</h2>
+            <h2><i class="fas fa-box"></i> Lista Completa de Productos ({{ report.productos_más_mencionados|length }} total)</h2>
             <div class="simple-list">
                 {% for product, count in report.productos_más_mencionados.items() %}
                 <div class="list-item">
@@ -81,7 +116,7 @@
 
         <!-- Lista desplegable de marcas -->
         <div id="brands-list" class="analytics-section" style="display: none;">
-            <h2><i class="fas fa-tags"></i> Lista Completa de Marcas</h2>
+            <h2><i class="fas fa-tags"></i> Lista Completa de Marcas ({{ report.marcas_más_mencionadas|length }} total)</h2>
             <div class="simple-list">
                 {% for brand, count in report.marcas_más_mencionadas.items() %}
                 <div class="list-item">
@@ -306,6 +341,34 @@
             color: white;
             padding: 0.25rem 0.5rem;
             border-radius: 12px;
+        }
+
+        /* Estilos para debug info */
+        .debug-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .debug-card {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .debug-card h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .debug-card ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .debug-card p {
+            margin: 0.25rem 0;
         }
     </style>
 </body>
